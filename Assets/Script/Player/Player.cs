@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void IncreaseExpOverTime()
+    private void IncreaseExpOverTime() //자동 경험치 획득
     {
         expIncreaseTimer += Time.deltaTime;
 
@@ -61,7 +61,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void GainExp(int expAmount)
+    public void GainExp(int expAmount)//유저 경험치 획득
     {
         playerExp += expAmount;
         while (playerExp >= GetRequiredExp())
@@ -72,15 +72,17 @@ public class Player : MonoBehaviour
         UpdateLevelUI();
     }
 
-
-    public int GetRequiredExp()
+    public int GetRequiredExp() 
     {
         return playerLevel * 10;
     }
 
-    private void UpdateLevelUI()
+    private void UpdateLevelUI() //유저 레벨업처리
     {
         playerUI.levelText.text = "Lv " + playerLevel;
+        playerAtk += 8;
+        playerMAXHP += 10;
+        playerMAXMP += 5;
     }
 
     // 몬스터 스폰어의 몬스터 리스트를 사용하여 자동 전투 처리
@@ -114,8 +116,6 @@ public class Player : MonoBehaviour
             lastAttackTime = Time.time;
         }
     }
-
-
 
     public void Attack(Monster monster)
     {

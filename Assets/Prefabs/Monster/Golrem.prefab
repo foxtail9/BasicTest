@@ -379,6 +379,6 @@ MonoBehaviour:
   monsterAtk: 0
   attackInterval: 1
   player: {fileID: 0}
-  healthBarUI: {fileID: 231032531008953524}
-  healthBarImage: {fileID: 0}
+  healthBarUI: {fileID: 1989510301721132496}
+  healthBarImage: {fileID: 4279453753969279376}
   mainCamera: {fileID: 0}

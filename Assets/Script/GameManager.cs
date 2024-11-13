@@ -27,13 +27,16 @@ public class GameManager : MonoBehaviour
     }
 
     public MapCreate mapCreate;
-    public bool isInBattle = false;  // 전투 중 상태
     public MonsterSpawner monsterSpawner;
+    public PlayerController playerController;
+    public bool isInBattle = false;  // 전투 중 상태
+    public bool autoPlay = false;
 
     private void Awake()
     {
         mapCreate = FindObjectOfType<MapCreate>();
-        monsterSpawner = FindObjectOfType<MonsterSpawner>();  // MonsterSpawner 찾기
+        monsterSpawner = FindObjectOfType<MonsterSpawner>();
+        playerController = FindObjectOfType<PlayerController>();
 
         if (instance == null)
         {
@@ -44,6 +47,23 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    void Update()
+    {
+        if (autoPlay)
+        {
+            InvokeRepeating("RandomMove", 0f, 1.5f); 
+        }
+        else
+        {
+            CancelInvoke("RandomMove");
+        }
+    }
+
+    void RandomMove()
+    {
+        playerController.RandomMove();  // 플레이어를 무작위로 이동
     }
 
     // 전투 시작 여부 체크
@@ -59,7 +79,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    public void StartAutoPlay()
+    {
+        if(autoPlay == false)
+        {
+            autoPlay = true;
+        }
+        else
+        {
+            autoPlay = false;
+        }
+    }
     // 플레이어가 이동하면 해당 타일에서 몬스터를 확인하고 처리
     public void PlayerMoveEvent(Vector3 newPosition)
     {

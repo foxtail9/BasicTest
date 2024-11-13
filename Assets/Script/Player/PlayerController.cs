@@ -105,4 +105,37 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    // 무작위로 w, a, s, d 입력을 선택하여 이동 처리
+    public void RandomMove()
+    {
+        if (isMoving) return;
+        if (gameManager.isInBattle) return;
+
+        // 무작위로 방향을 선택 (w, a, s, d에 대응하는 벡터)
+        Vector3 randomDirection = GetRandomDirection();
+
+        moveValue = randomDirection * moveDistance;
+
+        // 이동 처리
+        Moving(transform.position + moveValue);
+        Rotate(moveValue);
+    }
+
+    // w, a, s, d에 대응하는 벡터를 반환하는 함수
+    Vector3 GetRandomDirection()
+    {
+        // 4가지 방향을 무작위로 선택 (W, A, S, D)
+        int randomChoice = Random.Range(0, 4);
+
+        switch (randomChoice)
+        {
+            case 0: return Vector3.forward;  // W -> 앞
+            case 1: return Vector3.left;     // A -> 왼쪽
+            case 2: return Vector3.back;     // S -> 뒤
+            case 3: return Vector3.right;    // D -> 오른쪽
+            default: return Vector3.zero;
+        }
+    }
+
 }
