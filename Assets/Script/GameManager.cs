@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public MapCreate mapCreate;
     public MonsterSpawner monsterSpawner;
     public PlayerController playerController;
+    public RewardUI rewardUI;
     public bool isInBattle = false;  // 전투 중 상태
     public bool autoPlay = false;
 
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
         mapCreate = FindObjectOfType<MapCreate>();
         monsterSpawner = FindObjectOfType<MonsterSpawner>();
         playerController = FindObjectOfType<PlayerController>();
+        rewardUI = FindObjectOfType<RewardUI>();
 
         if (instance == null)
         {
@@ -65,7 +67,10 @@ public class GameManager : MonoBehaviour
     {
         playerController.RandomMove();  // 플레이어를 무작위로 이동
     }
-
+    public void EndBattle()
+    {
+         rewardUI.ShowRewardUI();
+    }
     // 전투 시작 여부 체크
     public void CheckBattle()
     {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class Player : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour
     public int playerMP = 50;
     public int playerMAXMP = 500;
     public int playerGold = 0;
+    public bool reward = false;
 
     private PlayerUIControll playerUI;
     private MonsterSpawner monsterSpawner;
@@ -64,10 +66,13 @@ public class Player : MonoBehaviour
     public void GainExp(int expAmount)//유저 경험치 획득
     {
         playerExp += expAmount;
-        while (playerExp >= GetRequiredExp())
+        if (playerExp >= GetRequiredExp())
         {
             playerExp -= GetRequiredExp();
             playerLevel++;
+            playerAtk += 8;
+            playerMAXHP += 10;
+            playerMAXMP += 5;
         }
         UpdateLevelUI();
     }
@@ -80,9 +85,7 @@ public class Player : MonoBehaviour
     private void UpdateLevelUI() //유저 레벨업처리
     {
         playerUI.levelText.text = "Lv " + playerLevel;
-        playerAtk += 8;
-        playerMAXHP += 10;
-        playerMAXMP += 5;
+        
     }
 
     // 몬스터 스폰어의 몬스터 리스트를 사용하여 자동 전투 처리
@@ -91,6 +94,11 @@ public class Player : MonoBehaviour
         if (monsterSpawner.monsters.Count <= 0)
         {
             gameManager.isInBattle = false;
+            if (reward)
+            {
+                reward = false;
+                gameManager.EndBattle();
+            }
             return;
         }
 
@@ -114,6 +122,7 @@ public class Player : MonoBehaviour
                 }
             }
             lastAttackTime = Time.time;
+            reward = true;
         }
     }
 
