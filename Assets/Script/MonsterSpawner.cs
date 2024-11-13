@@ -4,51 +4,64 @@ using System.Collections.Generic;
 public class MonsterSpawner : MonoBehaviour
 {
     public List<GameObject> monsterPrefabs;  // 몬스터 프리팹 리스트
+    public List<Monster> monsters = new List<Monster>();  // 스폰된 몬스터 리스트
     public GameObject mapParent;             // 몬스터 스폰될 부모 객체
 
     // 타일에서 몬스터 스폰
     public void SpawnMonsterOnTile(Vector3 tilePosition)
     {
-        // 타일의 y값을 1로 설정하여 몬스터가 항상 y = 1에서 스폰되도록 함
-        tilePosition.y = 1f;
+        tilePosition.y = 1f; // y값을 1로 설정하여 몬스터가 항상 y = 1에서 스폰되도록 함
 
-        // 몬스터를 스폰할 개수 (예: 3마리)
-        int numberOfMonsters = 3;
+        int numberOfMonsters = Random.Range(0, 4);  // 몬스터 스폰 개수
 
-        // 몬스터가 스폰될 범위 (플레이어 위치 기준으로 약간의 랜덤 오프셋을 주기)
-        float spawnRadius = 5f;
-
-        // mapParent가 할당되어 있지 않으면, 스폰하지 않음
-        if (mapParent == null)
-        {
-            Debug.LogError("mapParent is not assigned!");
-            return;
-        }
+        float spawnRadius = 5f;  // 몬스터가 스폰될 범위
 
         for (int i = 0; i < numberOfMonsters; i++)
         {
-            // 타일을 기준으로 랜덤하게 약간씩 오프셋을 줘서 몬스터를 배치
-            Vector3 randomOffset = new Vector3(
-                Random.Range(-spawnRadius, spawnRadius),
-                0f,
-                Random.Range(-spawnRadius, spawnRadius)
-            );
-
-            // 몬스터 스폰 위치 계산
+            Vector3 randomOffset = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0f, Random.Range(-spawnRadius, spawnRadius));
             Vector3 spawnPosition = tilePosition + randomOffset;
 
             // 랜덤으로 몬스터를 선택하여 스폰
             GameObject monsterPrefab = monsterPrefabs[Random.Range(0, monsterPrefabs.Count)];
             GameObject monster = Instantiate(monsterPrefab, spawnPosition, Quaternion.identity, mapParent.transform);
 
-            // 몬스터 스폰 후 Player 객체 할당
             Monster monsterScript = monster.GetComponent<Monster>();
             if (monsterScript != null)
             {
                 monsterScript.player = Player.Instance; // Player 객체를 할당
+                monsters.Add(monsterScript);  // 스폰된 몬스터를 리스트에 추가
             }
         }
     }
 
+    public List<Monster> GetMonstersAtPosition(Vector3 position)
+    {
+        List<Monster> monstersAtPosition = new List<Monster>();
+
+        foreach (Monster monster in monsters)
+        {
+            if (Vector3.Distance(monster.transform.position, position) < 1f)  // 1f 이내에 위치한 몬스터
+            {
+                monstersAtPosition.Add(monster);
+            }
+        }
+
+        return monstersAtPosition;
+    }
+
+    // 몬스터가 죽으면 리스트에서 제거
+    public void RemoveMonster(Monster monster)
+    {
+        if (monsters.Count == 0)
+        {
+            Debug.LogWarning("몬스터 리스트가 비어 있습니다. 몬스터를 제거할 수 없습니다.");
+            return;  
+        }
+        int index = monsters.IndexOf(monster);  // 몬스터의 인덱스를 찾음
+        if (index >= 0 && index < monsters.Count)
+        {
+            monsters.RemoveAt(index);  // 유효한 인덱스일 경우 제거
+        }
+    }
 
 }

@@ -15,9 +15,11 @@ public class PlayerController : MonoBehaviour
     public bool isDead = false;
 
     private BoxCollider boxCollider;  // 플레이어의 BoxCollider
+    private GameManager gameManager;
 
     private void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         moveValue = Vector3.zero;
         curPos = transform.position;
         boxCollider = GetComponent<BoxCollider>();
@@ -26,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public void Move(InputAction.CallbackContext context)
     {
         if (isMoving) return;
+        if (gameManager.isInBattle) return;
 
         Vector3 input = context.ReadValue<Vector3>();
 
