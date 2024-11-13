@@ -2,20 +2,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public static Player Instance { get; private set; } 
+    public static Player Instance { get; private set; }
 
     public int playerLevel = 1;
     public int playerExp = 0;
     public int playerAtk = 50;
-    public int playerHP = 250;
-    public int playerMAXHP = 250;
+    public int playerHP = 1000;
+    public int playerMAXHP = 1000;
     public int playerMP = 50;
-    public int playerMAXMP = 50;
+    public int playerMAXMP = 500;
     public int playerGold = 0;
 
     private PlayerUIControll playerUI;
 
-    private float expIncreaseTimer = 0f; 
+    private float expIncreaseTimer = 0f;
 
     private void Awake()
     {
@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
 
         if (expIncreaseTimer >= 1f)
         {
-            expIncreaseTimer = 0f; 
+            expIncreaseTimer = 0f;
             GainExp(1);
         }
     }
@@ -55,7 +55,7 @@ public class Player : MonoBehaviour
         {
             playerExp -= GetRequiredExp();
             playerLevel++;
-            UpdateLevelUI(); 
+            UpdateLevelUI();
         }
     }
 
@@ -67,5 +67,24 @@ public class Player : MonoBehaviour
     private void UpdateLevelUI()
     {
         playerUI.levelText.text = "Lv " + playerLevel;
+    }
+
+    // 몬스터의 공격에 의한 데미지를 받는 메서드
+    public void TakeDamage(int damage)
+    {
+        playerHP -= damage;
+
+        if (playerHP <= 0)
+        {
+            playerHP = 0;
+            Die();
+        }
+    }
+
+    // 플레이어가 죽었을 때 처리
+    private void Die()
+    {
+        Debug.Log("Player has died!");
+        // 죽음 처리 (예: 게임 오버 화면 표시)
     }
 }
